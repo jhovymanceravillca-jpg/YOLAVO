@@ -1,4 +1,4 @@
-USE laundry_manager;
+USE yo_lavo;
 
 INSERT IGNORE INTO garment_types (name, description) VALUES
   ('Camisa', 'Camisas y blusas'),

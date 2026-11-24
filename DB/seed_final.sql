@@ -1,4 +1,4 @@
-USE YOLAVO;
+USE yo_lavo;
 -- 1. Usuarios del sistema (Admin y Operador de caja)
 -- Contraseña para ambos: admin123
 INSERT INTO users (full_name, email, phone, password_hash, role, active)
