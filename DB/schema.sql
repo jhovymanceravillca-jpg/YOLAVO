@@ -1,0 +1,149 @@
+CREATE DATABASE IF NOT EXISTS laundry_manager
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE laundry_manager;
+
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  phone VARCHAR(40) NULL,
+  avatar_url MEDIUMTEXT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('ADMIN','STAFF','CLIENT') NOT NULL DEFAULT 'STAFF',
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  token_version INT UNSIGNED NOT NULL DEFAULT 0,
+  last_login_at TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS customers (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(80) NOT NULL,
+  last_name VARCHAR(80) NOT NULL,
+  phone VARCHAR(40) NOT NULL,
+  address VARCHAR(255) NULL,
+  email VARCHAR(190) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_customers_name (last_name, first_name),
+  INDEX idx_customers_phone (phone)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS garment_types (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description VARCHAR(255) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS services (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description VARCHAR(255) NULL,
+  unit_type ENUM('PRENDA','KILOGRAMO','FIJO') NOT NULL,
+  base_price DECIMAL(10,2) UNSIGNED NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  CHECK (base_price >= 0)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  order_code VARCHAR(30) NOT NULL UNIQUE,
+  customer_id BIGINT UNSIGNED NOT NULL,
+  created_by BIGINT UNSIGNED NOT NULL,
+  received_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  expected_delivery_at DATETIME NOT NULL,
+  status ENUM('RECIBIDO','EN_PROCESO','TERMINADO','ENTREGADO','CANCELADO')
+    NOT NULL DEFAULT 'RECIBIDO',
+  subtotal DECIMAL(10,2) UNSIGNED NOT NULL,
+  discount DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
+  total DECIMAL(10,2) UNSIGNED NOT NULL,
+  notes VARCHAR(1000) NULL,
+  CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customers(id),
+  CONSTRAINT fk_orders_user FOREIGN KEY (created_by) REFERENCES users(id),
+  INDEX idx_orders_status_due (status, expected_delivery_at),
+  INDEX idx_orders_received (received_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  order_id BIGINT UNSIGNED NOT NULL,
+  garment_type_id BIGINT UNSIGNED NOT NULL,
+  service_id BIGINT UNSIGNED NOT NULL,
+  quantity DECIMAL(10,2) UNSIGNED NOT NULL,
+  weight_kg DECIMAL(10,3) UNSIGNED NULL,
+  unit_price DECIMAL(10,2) UNSIGNED NOT NULL,
+  subtotal DECIMAL(10,2) UNSIGNED NOT NULL,
+  notes VARCHAR(255) NULL,
+  CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_items_garment FOREIGN KEY (garment_type_id) REFERENCES garment_types(id),
+  CONSTRAINT fk_items_service FOREIGN KEY (service_id) REFERENCES services(id),
+  CHECK (quantity > 0),
+  CHECK (unit_price >= 0),
+  INDEX idx_items_order (order_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS payments (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  order_id BIGINT UNSIGNED NOT NULL,
+  amount DECIMAL(10,2) UNSIGNED NOT NULL,
+  payment_method ENUM('EFECTIVO','TARJETA','TRANSFERENCIA','QR') NOT NULL,
+  reference VARCHAR(120) NULL,
+  created_by BIGINT UNSIGNED NOT NULL,
+  paid_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  voided_at TIMESTAMP NULL,
+  voided_by BIGINT UNSIGNED NULL,
+  CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_payments_user FOREIGN KEY (created_by) REFERENCES users(id),
+  CONSTRAINT fk_payments_voided_user FOREIGN KEY (voided_by) REFERENCES users(id),
+  CHECK (amount > 0),
+  INDEX idx_payments_order (order_id, paid_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS deliveries (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  order_id BIGINT UNSIGNED NOT NULL UNIQUE,
+  delivered_by BIGINT UNSIGNED NOT NULL,
+  delivered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  received_by_name VARCHAR(120) NOT NULL,
+  CONSTRAINT fk_deliveries_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_deliveries_user FOREIGN KEY (delivered_by) REFERENCES users(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS order_status_history (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  order_id BIGINT UNSIGNED NOT NULL,
+  previous_status ENUM('RECIBIDO','EN_PROCESO','TERMINADO','ENTREGADO','CANCELADO') NULL,
+  new_status ENUM('RECIBIDO','EN_PROCESO','TERMINADO','ENTREGADO','CANCELADO') NOT NULL,
+  changed_by BIGINT UNSIGNED NOT NULL,
+  changed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_history_order FOREIGN KEY (order_id) REFERENCES orders(id),
+  CONSTRAINT fk_history_user FOREIGN KEY (changed_by) REFERENCES users(id),
+  INDEX idx_history_order (order_id, changed_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS app_settings (
+  setting_key VARCHAR(64) NOT NULL PRIMARY KEY,
+  accent_color CHAR(7) NOT NULL DEFAULT '#2863e9',
+  font_family VARCHAR(24) NOT NULL DEFAULT 'system',
+  background_mode VARCHAR(8) NOT NULL DEFAULT 'light',
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO app_settings (setting_key, accent_color, font_family, background_mode)
+VALUES ('appearance', '#2863e9', 'system', 'light');
+
+CREATE TABLE IF NOT EXISTS laundry_shops (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  phone VARCHAR(40) NULL,
+  latitude DECIMAL(10,7) NOT NULL,
+  longitude DECIMAL(10,7) NOT NULL,
+  opening_hours VARCHAR(80) NULL,
+  rating DECIMAL(2,1) NOT NULL DEFAULT 4.5,
+  services_summary VARCHAR(255) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_shops_active (active)
+) ENGINE=InnoDB;
