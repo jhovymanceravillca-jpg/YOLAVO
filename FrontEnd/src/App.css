@@ -1,184 +1,633 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* ==========================================================================
+   YO LAVO — EXTENDED APP & COMPONENT STYLING
+   ========================================================================== */
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+.dashboard-container {
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2.25rem 0 1.25rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
 }
 
-#center {
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.03em;
+}
+
+.section-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Laundry Marketplace Card (Modo Cliente)
+   ========================================================================== */
+.laundry-card {
+  background: linear-gradient(165deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
+  transition: var(--transition-normal);
   position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.laundry-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--orange-border);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 106, 0, 0.15);
+}
+
+.laundry-card-banner {
+  height: 140px;
+  background: linear-gradient(135deg, var(--blue-950) 0%, var(--blue-800) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.laundry-card-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 70% 30%, rgba(255, 106, 0, 0.25) 0%, transparent 60%);
+}
+
+.laundry-card-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+}
+
+.laundry-card-distance {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  background: rgba(7, 13, 24, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--blue-300);
+  border: 1px solid var(--blue-border);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.laundry-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.laundry-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-white);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.laundry-address {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.laundry-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1rem;
+}
+
+.rating-stars {
+  color: var(--amber-400);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.price-tag-pill {
+  color: var(--orange-400);
+  background: var(--orange-soft);
+  border: 1px solid var(--orange-border);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.services-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.chip {
+  background: var(--bg-surface-3);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.chip:hover {
+  border-color: var(--orange-border);
+  color: var(--orange-300);
+}
+
+/* ==========================================================================
+   Order Tracking & Progressive Stepper Card
+   ========================================================================== */
+.order-card {
+  background: linear-gradient(160deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.order-card:hover {
+  border-color: var(--orange-border);
+  box-shadow: var(--shadow-md);
+}
+
+.order-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-price {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--orange-500);
+  letter-spacing: -0.02em;
+}
+
+/* Advanced Stepper */
+.stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.25rem 0;
+  position: relative;
+}
+
+.stepper-progress-line {
+  position: absolute;
+  top: 15px;
+  left: 30px;
+  right: 30px;
+  height: 3px;
+  background: var(--bg-surface-3);
+  z-index: 1;
+}
+
+.stepper-progress-fill {
+  height: 100%;
+  background: var(--orange-gradient);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-orange-glow);
+  transition: width 0.4s ease;
+}
+
+.stepper-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  z-index: 2;
+  position: relative;
+}
+
+.stepper-step.completed {
+  color: var(--orange-400);
+}
+
+.stepper-step.active {
+  color: var(--blue-400);
+}
+
+.stepper-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-surface-2);
+  border: 2px solid var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  transition: var(--transition-normal);
+}
+
+.stepper-step.completed .stepper-dot {
+  background: var(--orange-gradient);
+  border-color: var(--orange-500);
+  color: white;
+  box-shadow: var(--shadow-orange-glow);
+}
+
+.stepper-step.active .stepper-dot {
+  background: var(--blue-900);
+  border-color: var(--blue-500);
+  color: var(--blue-300);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
+  animation: pulseActiveDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseActiveDot {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 14px rgba(59, 130, 246, 0.5); }
+  50% { transform: scale(1.1); box-shadow: 0 0 22px rgba(59, 130, 246, 0.8); }
+}
+
+.order-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Realistic Washing Machine Simulator Card (Modo Negocio)
+   ========================================================================== */
+.machine-card {
+  background: linear-gradient(150deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.machine-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.machine-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Realistic 3D Drum */
+.machine-drum-housing {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #0b1526 30%, #030712 100%);
+  border: 4px solid var(--border-medium);
+  margin: 0.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.machine-drum-inner {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  transition: var(--transition-normal);
+}
+
+.machine-drum-housing.running {
+  border-color: var(--blue-500);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(37, 99, 235, 0.45);
+}
+
+.machine-drum-housing.running .machine-drum-inner {
+  animation: spinDrumFast 3s linear infinite;
+  border-color: var(--orange-500);
+}
+
+@keyframes spinDrumFast {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.progress-bar-bg {
   width: 100%;
+  height: 8px;
+  background: var(--bg-surface-3);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-500), var(--orange-500));
+  border-radius: var(--radius-pill);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.5);
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+/* ==========================================================================
+   Delivery Driver HUD & Route Card (Modo Delivery)
+   ========================================================================== */
+.delivery-card {
+  background: linear-gradient(150deg, var(--bg-surface-2) 0%, var(--bg-surface-1) 100%);
+  border: 1px solid var(--border-medium);
+  border-left: 5px solid var(--orange-500);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: var(--transition-normal);
+  box-shadow: var(--shadow-md);
+}
+
+.delivery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(255, 106, 0, 0.15);
+}
+
+.delivery-pay-badge {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--orange-400);
+  background: var(--orange-soft);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--orange-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.route-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--bg-base);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.route-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 2;
+}
+
+.route-icon-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+  border: 2px solid var(--bg-base);
+}
+
+.route-icon-dot.start {
+  background: var(--blue-400);
+  box-shadow: 0 0 10px var(--blue-500);
+}
+
+.route-icon-dot.end {
+  background: var(--orange-500);
+  box-shadow: 0 0 10px var(--orange-500);
+}
+
+/* ==========================================================================
+   Filter Pills Bar
+   ========================================================================== */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 1.25rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.filter-pill:hover {
+  color: var(--text-white);
+  border-color: var(--orange-border);
+  background: var(--bg-surface-3);
+}
+
+.filter-pill.active {
+  background: var(--blue-soft);
+  border-color: var(--blue-500);
+  color: var(--blue-300);
+  box-shadow: var(--shadow-blue-glow);
+}
+
+/* ==========================================================================
+   Interactive Quote Modal Elements
+   ========================================================================== */
+.quote-counter-box {
+  background: var(--bg-base);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.counter-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-medium);
+  color: var(--text-white);
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.counter-btn:hover {
+  background: var(--orange-500);
+  border-color: var(--orange-500);
+  color: white;
+}
+
+.counter-value {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--orange-400);
+  min-width: 60px;
+  text-align: center;
+}
+
+.addon-card-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.addon-card-label:hover {
+  border-color: var(--orange-border);
+}
+
+.addon-card-label input[type="checkbox"] {
+  accent-color: var(--orange-500);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Mock QR Code Container */
+.qr-preview-box {
+  background: white;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem auto 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.app-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(3, 7, 18, 0.95);
+  padding: 2.75rem 2rem 2rem;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.footer-content {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.75rem;
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.footer-links a:hover {
+  color: var(--orange-400);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1.25rem;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .stepper-step span {
+    font-size: 0.7rem;
   }
 }

@@ -1,32 +1,52 @@
-# React + TypeScript + Vite
+# Yo Lavo — Frontend Unificado & Profesional
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Plataforma web on-demand para la conexión inteligente de **Clientes**, **Negocios de Lavandería** y **Deliverys**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🎨 Paleta de Diseño Profesional
+- **Negro casi oscuro (`#06090e`, `#0b0f19`, `#111827`)**: Base principal de alto contraste y sofisticación visual.
+- **Azul oscuro (`#091a33`, `#1b3a6b`, `#2563eb`)**: Superficies secundarias, barras de estado y acentos tecnológicos.
+- **Naranja vibrante (`#ff6b00`, `#ea580c`, `#fb923c`)**: Botones de llamada a la acción (CTA), badges destacados e indicadores en vivo.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Tecnologías
+- **Framework**: React 19 + TypeScript
+- **Bundler / Tooling**: Vite 8 + Oxlint
+- **Peticiones HTTP**: Axios con fallback dinámico
+- **Diseño**: CSS3 Grid + Flexbox 100% responsivo para móviles, tablets y monitores.
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 📦 Ejecución del Frontend
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+Dentro del directorio `FrontEnd/`:
+
+### 1. Iniciar en Modo Desarrollo (HMR)
+```bash
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### 2. Compilar para Producción
+```bash
+npm run build
+```
+
+### 3. Vista Previa de Producción
+```bash
+npm run preview
+```
+
+### 4. Análisis de Código (Linter)
+```bash
+npm run lint
+```
+
+---
+
+## 🧭 Vistas y Roles Integrados
+- **✨ Modo Explorar / Landing**: Métricas globales en cards, propuesta de valor y acceso rápido.
+- **🧺 Modo Cliente**: Lavanderías cercanas, cotizador interactivo (por kilo y por prenda), seguimiento en tiempo real con línea de tiempo (stepper).
+- **🏪 Modo Negocio**: Panel financiero (ingresos y pedidos), monitoreo de lavadoras/secadoras en tiempo real con estado dinámico, recepción y avance de pedidos.
+- **🛵 Modo Delivery**: Ganancias del día, carrera activa con detalle de ruta punto A y B, radar de solicitudes disponibles.
