@@ -89,7 +89,7 @@ router.post('/registro', async (req: Request, res: Response) => {
 
       await conn.query(
         'INSERT INTO customers (first_name, last_name, phone, address, email, user_id) VALUES (?, ?, ?, ?, ?, ?)',
-        [firstName, lastName, telefono || null, direccion || null, correo, userId]
+        [firstName, lastName, telefono || '', direccion || null, correo, userId]
       );
     }
 
@@ -106,7 +106,7 @@ router.post('/registro', async (req: Request, res: Response) => {
       direccion: direccion || '',
     };
 
-    res.status(201).json(newUser);
+    res.status(201).json({ ...newUser, rol: rol.toLowerCase() });
 
   } catch (error) {
     await conn.rollback();

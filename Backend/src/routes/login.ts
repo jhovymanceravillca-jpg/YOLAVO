@@ -95,7 +95,8 @@ router.post('/login', async (req: Request, res: Response) => {
 
     const token = generateToken(user);
 
-    res.status(200).json({ token, user });
+    // El frontend espera 'cliente' | 'negocio' | 'delivery', no el rol de la base
+    res.status(200).json({ token, user: { ...user, rol: rol.toLowerCase() } });
 
   } catch (error) {
     console.error('Error en login:', error);

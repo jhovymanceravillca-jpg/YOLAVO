@@ -6,6 +6,16 @@ import { AuthRequest } from '../types.js';
 
 const router = Router();
 
+// Estados de la base -> estados que entiende el frontend
+const ESTADOS: Record<string, string> = {
+  RECIBIDO: 'solicitado',
+  EN_PROCESO: 'en_proceso',
+  TERMINADO: 'listo',
+  EN_CAMINO: 'en_camino',
+  ENTREGADO: 'entregado',
+  CANCELADO: 'cancelado',
+};
+
 // Helper para formatear fecha
 function formatFecha(dateStr: string | Date | null): string {
   if (!dateStr) return '';
@@ -71,7 +81,7 @@ router.get('/negocio/pedidos', authenticate, requireRole('STAFF'), async (req: A
       tipo_cotizacion: row.tipo_cotizacion,
       cantidad: Number(row.cantidad),
       precio_total: Number(row.precio_total),
-      estado: row.estado,
+      estado: ESTADOS[row.estado] ?? 'solicitado',
       metodo_pago: row.metodo_pago,
       direccion_recojo: row.direccion_recojo || '',
       direccion_entrega: row.direccion_entrega || '',
@@ -129,7 +139,7 @@ router.get('/delivery/mis-pedidos', authenticate, requireRole('DELIVERY'), async
       tipo_cotizacion: row.tipo_cotizacion,
       cantidad: Number(row.cantidad),
       precio_total: Number(row.precio_total),
-      estado: row.estado,
+      estado: ESTADOS[row.estado] ?? 'solicitado',
       metodo_pago: row.metodo_pago,
       direccion_recojo: row.direccion_recojo || '',
       direccion_entrega: row.direccion_entrega || '',
