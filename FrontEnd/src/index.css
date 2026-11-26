@@ -907,3 +907,8 @@ p {
     width: 100%;
   }
 }
+
+/* Enlaces con aspecto de boton y listas desplegables */
+a.btn-primary, a.btn-secondary, a.btn-ghost { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+select.input-field option { background: #111a2e; color: #fff; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
