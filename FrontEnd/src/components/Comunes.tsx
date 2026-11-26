@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { NOMBRE_ESTADO } from '../formato';
 import type { Estado } from '../types';
 
@@ -42,7 +42,8 @@ export function Cifra({ icono, valor, nombre }: { icono: string; valor: string |
 }
 
 export function EtiquetaEstado({ estado }: { estado: Estado }) {
-  const color = estado === 'solicitado' ? 'badge-yellow' : estado === 'en_proceso' ? 'badge-blue' : 'badge-green';
+  const color = estado === 'solicitado' || estado === 'en_lavanderia' || estado === 'cancelado'
+    ? 'badge-yellow' : estado === 'entregado' ? 'badge-green' : 'badge-blue';
   return <span className={`badge ${color}`}>{NOMBRE_ESTADO[estado]}</span>;
 }
 
@@ -55,5 +56,43 @@ export function Cargando({ error }: { error: string }) {
     <main className="dashboard-container">
       <Vacio>{error ? `⚠️ ${error}` : 'Cargando…'}</Vacio>
     </main>
+  );
+}
+
+/** Mapa de Google (necesita internet). Se carga solo al pedirlo para no frenar la pagina */
+export function Mapa({ direccion }: { direccion: string }) {
+  const [abierto, setAbierto] = useState(false);
+  const consulta = encodeURIComponent(`${direccion}, Cochabamba, Bolivia`);
+  return (
+    <div>
+      <button type="button" className="btn-ghost btn-sm" onClick={() => setAbierto(!abierto)}>
+        {abierto ? '✕ Ocultar mapa' : '🗺️ Ver mapa'}
+      </button>
+      {abierto && (
+        <iframe title={`Mapa de ${direccion}`} loading="lazy" className="mapa"
+          src={`https://maps.google.com/maps?q=${consulta}&z=16&output=embed`} />
+      )}
+    </div>
+  );
+}
+
+export function Contacto({ nombre, telefono }: { nombre: string; telefono: string }) {
+  // Deja solo digitos y evita repetir el codigo de Bolivia
+  const numero = telefono.replace(/\D/g, '').replace(/^591(?=\d{8}$)/, '');
+  if (!numero) return null;
+  return (
+    <span style={{ display: 'inline-flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+      <a className="btn-ghost btn-sm" href={`tel:+591${numero}`}>📞 {nombre}</a>
+      <a className="btn-ghost btn-sm" href={`https://wa.me/591${numero}`} target="_blank" rel="noreferrer">WhatsApp</a>
+    </span>
+  );
+}
+
+export function SelectorZona({ id, valor, cambiar, zonas }: { id: string; valor: string; cambiar: (v: string) => void; zonas: string[] }) {
+  return (
+    <select id={id} className="input-field" required value={valor} onChange={(e) => cambiar(e.target.value)}>
+      <option value="">Elige la zona</option>
+      {zonas.map((z) => <option key={z} value={z}>{z}</option>)}
+    </select>
   );
 }

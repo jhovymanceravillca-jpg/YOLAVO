@@ -5,6 +5,7 @@ import Cliente from './components/Cliente';
 import Delivery from './components/Delivery';
 import Explorar from './components/Explorar';
 import Negocio from './components/Negocio';
+import Perfil from './components/Perfil';
 import type { Estado, Usuario } from './types';
 import './App.css';
 
@@ -14,6 +15,7 @@ export default function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [enInicio, setEnInicio] = useState(false);
   const [modal, setModal] = useState(false);
+  const [perfil, setPerfil] = useState(false);
   const [aviso, setAviso] = useState<{ texto: string; icono: string } | null>(null);
   const temporizador = useRef<number | undefined>(undefined);
 
@@ -83,10 +85,10 @@ export default function App() {
           {usuario ? (
             <div className="user-pill">
               <div className="user-avatar">{usuario.nombre.charAt(0)}</div>
-              <div>
-                <div className="user-name">{usuario.nombre}</div>
-                <div className="user-role-badge">Rol: {usuario.rol}</div>
-              </div>
+              <button className="boton-perfil" title="Editar mis datos" onClick={() => setPerfil(true)}>
+                <span className="user-name">{usuario.nombre} ✏️</span>
+                <span className="user-role-badge">Rol: {usuario.rol}</span>
+              </button>
               <button className="btn-danger btn-sm" onClick={salir}>✕ Salir</button>
             </div>
           ) : (
@@ -102,9 +104,14 @@ export default function App() {
 
       {modal && !usuario && <AuthModal alCerrar={() => setModal(false)} alEntrar={entrar} avisar={avisar} />}
 
+      {perfil && usuario && (
+        <Perfil usuario={usuario} avisar={avisar} alCerrar={() => setPerfil(false)}
+          alGuardar={(u) => { setUsuario(u); setPerfil(false); }} />
+      )}
+
       <footer className="app-footer">
         <div className="footer-content">
-          <span><strong>🧺 YO LAVO</strong> — Lavanderías a domicilio · La Paz, Bolivia</span>
+          <span><strong>🧺 YO LAVO</strong> — Lavanderías a domicilio · Cochabamba, Bolivia</span>
         </div>
       </footer>
     </div>

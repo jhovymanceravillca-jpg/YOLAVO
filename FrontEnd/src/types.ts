@@ -1,6 +1,19 @@
 export type Rol = 'cliente' | 'negocio' | 'delivery';
-export type Estado = 'solicitado' | 'en_proceso' | 'listo' | 'en_camino' | 'entregado' | 'cancelado';
-export type MetodoPago = 'qr' | 'efectivo' | 'tarjeta';
+export type Estado =
+  | 'solicitado' | 'aceptado' | 'recogiendo' | 'en_lavanderia' | 'en_proceso'
+  | 'listo' | 'en_camino' | 'entregado' | 'cancelado';
+export type MetodoPago = 'qr' | 'efectivo' | 'tarjeta' | 'transferencia';
+
+export interface Servicio {
+  id: number;
+  nombre: string;
+  unidad: 'PRENDA' | 'KILOGRAMO' | 'FIJO';
+  precio: number;
+  activo: boolean;
+  extra: boolean;
+}
+
+export interface Catalogo { servicios: Servicio[]; prendas: { id: number; nombre: string }[] }
 
 export interface Usuario {
   id: number;
@@ -16,6 +29,10 @@ export interface Negocio {
   nombre_negocio: string;
   direccion: string;
   distrito: string;
+  telefono: string;
+  horario: string;
+  puntaje: number;
+  total_resenas: number;
   precio_kilo: number;
   servicios: string[];
   lavadoras_disponibles: number;
@@ -28,7 +45,19 @@ export interface Pedido {
   cliente_telefono: string;
   nombre_negocio: string;
   direccion_negocio: string;
-  tipo_cotizacion: 'por_kilo' | 'por_prenda';
+  telefono_negocio: string;
+  repartidor: { nombre: string; telefono: string } | null;
+  referencia: string;
+  calificacion: number | null;
+  historial: { estado: Estado; fecha: string }[];
+  negocio_id: number;
+  modalidad: 'domicilio' | 'local';
+  servicio: string;
+  extras: string;
+  pagado: number;
+  saldo: number;
+  aviso_pago: string | null;
+  tipo_cotizacion: 'por_kilo' | 'por_prenda' | 'fijo';
   cantidad: number;
   precio_total: number;
   pago_delivery: number;
@@ -58,15 +87,20 @@ export interface Producto {
 }
 
 export interface PanelNegocio {
-  local: { nombre: string; direccion: string; precio_kilo: number };
-  resumen: { pedidos: number; activos: number; ingresos: number };
+  local: { id: number; nombre: string; direccion: string; zona: string; telefono: string; horario: string; tiene_qr: boolean };
+  resumen: {
+    pedidos: number; activos: number; entregados: number; cancelados: number;
+    facturado: number; cobrado: number; saldo: number; cobros: { metodo: MetodoPago; monto: number }[];
+  };
+  servicios: Servicio[];
+  puede_tarifas: boolean;
   pedidos: Pedido[];
   maquinas: Maquina[];
   productos: Producto[];
 }
 
 export interface PanelDelivery {
-  resumen: { entregas: number; ganancias: number };
+  resumen: { viajes: number; ganancias: number };
   activos: Pedido[];
   disponibles: Pedido[];
 }

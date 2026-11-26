@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { api, mensajeError } from '../api';
+import { ZONAS } from '../formato';
 import type { Avisar, Rol, Usuario } from '../types';
+import { SelectorZona } from './Comunes';
 
 interface Props {
   alCerrar: () => void;
@@ -19,13 +21,14 @@ export default function AuthModal({ alCerrar, alEntrar, avisar }: Props) {
   const [registro, setRegistro] = useState(false);
   const [rol, setRol] = useState<Rol>('cliente');
   const [form, setForm] = useState(INICIAL);
+  const [zona, setZona] = useState('');
   const [enviando, setEnviando] = useState(false);
 
   const enviar = async (e: FormEvent) => {
     e.preventDefault();
     setEnviando(true);
     try {
-      const res = await api.post(registro ? '/registro' : '/login', { ...form, rol });
+      const res = await api.post(registro ? '/registro' : '/login', { ...form, rol, zona });
       alEntrar(res.data.user, res.data.token);
     } catch (error) {
       avisar(mensajeError(error), '⚠️');
@@ -62,11 +65,17 @@ export default function AuthModal({ alCerrar, alEntrar, avisar }: Props) {
                   ))}
                 </div>
               </div>
-              {campo('nombre_completo', 'Nombre completo', 'text', 'Ej. Juana Quispe')}
-              {rol === 'negocio' && campo('nombre_negocio', 'Nombre de la lavandería', 'text', 'Ej. Lavandería Sopocachi')}
-              {campo('usuario', 'Usuario', 'text', 'juanaq')}
+              {campo('nombre_completo', 'Nombre completo', 'text', 'Nombre y apellido')}
+              {rol === 'negocio' && campo('nombre_negocio', 'Nombre de la lavandería', 'text', 'Nombre de tu lavandería')}
+              {campo('usuario', 'Usuario', 'text', 'usuario')}
               {campo('telefono', 'Celular', 'tel', '70012345')}
-              {campo('direccion', 'Dirección', 'text', 'Av. 6 de Agosto 890')}
+              {campo('direccion', 'Dirección', 'text', 'Calle y número')}
+              {rol === 'negocio' && (
+                <div className="form-group">
+                  <label className="form-label" htmlFor="zona">Zona</label>
+                  <SelectorZona id="zona" valor={zona} cambiar={setZona} zonas={ZONAS} />
+                </div>
+              )}
             </>
           )}
           {campo('correo', 'Correo electrónico', 'email', 'correo@ejemplo.com')}

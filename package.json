@@ -1,0 +1,8 @@
+{
+  "name": "yolavo",
+  "private": true,
+  "scripts": {
+    "dev": "node dev.mjs",
+    "instalar": "npm install --prefix Backend && npm install --prefix FrontEnd"
+  }
+}

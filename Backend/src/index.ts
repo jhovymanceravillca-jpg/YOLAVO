@@ -9,18 +9,20 @@ import cliente from './routes/cliente.js';
 import negocio from './routes/negocio.js';
 import delivery from './routes/delivery.js';
 import estados from './routes/estados.js';
+import pagos from './routes/pagos.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3001);
 
 app.use(cors());
-app.use(express.json());
+// 2 MB para poder subir la imagen del QR
+app.use(express.json({ limit: '2mb' }));
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/api', publico, cuentas, cliente, negocio, delivery, estados);
+app.use('/api', publico, cuentas, cliente, negocio, delivery, estados, pagos);
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (err instanceof HttpError) {

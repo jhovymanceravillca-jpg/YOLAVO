@@ -3,7 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 // Se puede cambiar con VITE_API_URL en un archivo .env del frontend
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api',
+  // Usa el mismo equipo desde el que se abrio la pagina (sirve en la PC y en el celular)
+  baseURL: import.meta.env.VITE_API_URL ?? `http://${window.location.hostname}:3001/api`,
   timeout: 10000,
 });
 
@@ -39,9 +40,9 @@ export function useDatos<T>(ruta: string) {
   }, [ruta]);
 
   useEffect(() => {
-    void recargar();
+    const primera = setTimeout(() => void recargar(), 0);
     const intervalo = setInterval(() => void recargar(), 4000);
-    return () => clearInterval(intervalo);
+    return () => { clearTimeout(primera); clearInterval(intervalo); };
   }, [recargar]);
 
   return { datos, error, recargar };

@@ -21,6 +21,21 @@ router.get('/sesion', requiere(), (req: AuthRequest, res) => {
   res.json(req.user);
 });
 
+router.patch('/perfil', requiere(), async (req: AuthRequest, res) => {
+  const nombre = texto(req.body?.nombre, 'nombre completo');
+  const telefono = texto(req.body?.telefono, 'celular', 40);
+  const direccion = texto(req.body?.direccion, 'dirección', 255);
+  const [primero = '', ...resto] = nombre.split(/\s+/);
+  await transaccion(async (conn) => {
+    await conn.query('UPDATE users SET full_name = ?, phone = ?, address = ? WHERE id = ?',
+      [nombre, telefono, direccion, req.user!.id]);
+    await conn.query(
+      'UPDATE customers SET first_name = ?, last_name = ?, phone = ?, address = ? WHERE user_id = ?',
+      [primero, resto.join(' '), telefono, direccion, req.user!.id]);
+  });
+  res.json({ ...req.user, nombre, telefono, direccion });
+});
+
 const ROLES_DB: Record<string, string> = { cliente: 'CLIENT', negocio: 'STAFF', delivery: 'DELIVERY' };
 
 router.post('/registro', async (req, res) => {
@@ -55,12 +70,12 @@ router.post('/registro', async (req, res) => {
         [primero, resto.join(' '), telefono, direccion, correo, nuevo.insertId]);
     }
     if (rol === 'STAFF') {
-      // Coordenadas del centro de La Paz como valor inicial
+      // Coordenadas del centro de Cochabamba como valor inicial
       await conn.query(
         `INSERT INTO laundry_shops (name, address, phone, latitude, longitude, services_summary, owner_id,
                                     district, price_per_kg)
-         VALUES (?, ?, ?, -16.4955, -68.1336, 'Por Kilo,Por Prenda', ?, 'La Paz', 10)`,
-        [nombreLocal, direccion, telefono, nuevo.insertId]);
+         VALUES (?, ?, ?, -17.3935, -66.1570, 'Por Kilo,Por Prenda', ?, ?, 10)`,
+        [nombreLocal, direccion, telefono, nuevo.insertId, String(b.zona || 'Centro').slice(0, 80)]);
     }
     return nuevo.insertId as number;
   });

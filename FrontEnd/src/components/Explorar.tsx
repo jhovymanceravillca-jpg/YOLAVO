@@ -4,9 +4,10 @@ import { Cifra } from './Comunes';
 interface Resumen { lavanderias: number; clientes: number; pedidos: number; entregados: number }
 
 const PASOS = [
-  ['🧼', '1. Solicita y cotiza', 'Elige lavado por kilo o por prenda. El precio se calcula en bolivianos antes de confirmar.'],
-  ['🫧', '2. La lavandería trabaja', 'La lavandería acepta tu pedido, lo lava y lo marca como listo.'],
-  ['🛵', '3. Entrega en tu puerta', 'Un repartidor toma la carrera y te lleva la ropa. Sigues cada estado en tu panel.'],
+  ['🧺', '1. Pide', 'Elige una lavandería, indica tu zona y dirección, y mira el precio estimado en bolivianos.'],
+  ['🛵', '2. Recogemos', 'La lavandería acepta y un repartidor recoge tu ropa en tu puerta.'],
+  ['⚖️', '3. Pesamos y lavamos', 'La lavandería confirma el peso real y el total antes de lavar.'],
+  ['✨', '4. Entregamos', 'Recibes tu ropa limpia, pagas y calificas el servicio.'],
 ] as const;
 
 export default function Explorar({ alEmpezar }: { alEmpezar: () => void }) {
@@ -15,7 +16,7 @@ export default function Explorar({ alEmpezar }: { alEmpezar: () => void }) {
   return (
     <main>
       <section className="hero-section">
-        <div className="hero-tag"><span>Lavanderías a domicilio en La Paz, Bolivia</span></div>
+        <div className="hero-tag"><span>Lavanderías a domicilio en Cochabamba, Bolivia</span></div>
         <h1 className="hero-heading">
           Tu ropa impecable, <br />
           <span className="text-gradient-orange">en tu puerta</span> con <span className="text-gradient-blue">Yo Lavo</span>

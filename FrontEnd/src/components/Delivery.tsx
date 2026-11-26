@@ -1,7 +1,7 @@
 import { api, mensajeError, useDatos } from '../api';
 import { bs, detalle, enlaceMapa, NOMBRE_PAGO } from '../formato';
 import type { Avisar, Estado, PanelDelivery, Pedido, Usuario } from '../types';
-import { Banner, Cargando, Cifra, Titulo, Vacio } from './Comunes';
+import { Banner, Cargando, Cifra, Contacto, Mapa, Titulo, Vacio } from './Comunes';
 
 interface Props {
   usuario: Usuario;
@@ -9,12 +9,21 @@ interface Props {
   cambiarEstado: (id: number, estado: Estado) => Promise<void>;
 }
 
+// "recojo": del cliente a la lavanderia. En otro caso: de la lavanderia al cliente
+const esRecojo = (p: Pedido) => p.estado === 'aceptado' || p.estado === 'recogiendo';
+
 function Ruta({ p }: { p: Pedido }) {
+  const cliente = `${p.cliente_nombre}, ${p.direccion_entrega}`;
+  const local = `${p.nombre_negocio}, ${p.direccion_negocio}`;
   return (
     <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-      <div>🏪 <strong>Recoger:</strong> {p.nombre_negocio}, {p.direccion_negocio}</div>
-      <div>🏁 <strong>Entregar a:</strong> {p.cliente_nombre}, {p.direccion_entrega}</div>
-      <div>{detalle(p)} • Cobrar {bs(p.precio_total)} ({NOMBRE_PAGO[p.metodo_pago]})</div>
+      <span className={`badge ${esRecojo(p) ? 'badge-yellow' : 'badge-green'}`}>{esRecojo(p) ? 'RECOJO de ropa sucia' : 'ENTREGA de ropa limpia'}</span>
+      <div style={{ marginTop: '0.6rem' }}>🅰️ <strong>Desde:</strong> {esRecojo(p) ? cliente : local}</div>
+      <div>🅱️ <strong>Hasta:</strong> {esRecojo(p) ? local : cliente}</div>
+      {p.referencia && <div>📌 <strong>Referencia del cliente:</strong> {p.referencia}</div>}
+      <div>{detalle(p)}{esRecojo(p) ? '' : p.saldo === 0 ? ' • Ya está pagado'
+        : p.metodo_pago === 'efectivo' ? ` • Cobrar ${bs(p.saldo)} en efectivo`
+          : ` • Pago por ${NOMBRE_PAGO[p.metodo_pago]}: lo verifica la lavandería`}</div>
     </div>
   );
 }
@@ -33,18 +42,18 @@ export default function Delivery({ usuario, avisar, cambiarEstado }: Props) {
     await recargar();
   };
 
-  const entregar = async (id: number) => {
-    await cambiarEstado(id, 'entregado');
+  const completar = async (p: Pedido) => {
+    await cambiarEstado(p.id, esRecojo(p) ? 'en_lavanderia' : 'entregado');
     await recargar();
   };
 
   return (
     <main className="dashboard-container">
-      <Banner etiqueta="Panel del repartidor" titulo={`${usuario.nombre} 🛵`} nota="Toma carreras de pedidos listos y entrégalos." />
+      <Banner etiqueta="Panel del repartidor" titulo={`${usuario.nombre} 🛵`} nota="Recoge la ropa sucia y entrega la ropa limpia." />
 
       <div className="stats-grid">
         <Cifra icono="💵" valor={bs(datos.resumen.ganancias)} nombre="Ganancias acumuladas" />
-        <Cifra icono="✅" valor={datos.resumen.entregas} nombre="Entregas completadas" />
+        <Cifra icono="✅" valor={datos.resumen.viajes} nombre="Viajes completados" />
         <Cifra icono="🛵" valor={datos.activos.length} nombre="Carreras en curso" />
       </div>
 
@@ -58,17 +67,21 @@ export default function Delivery({ usuario, avisar, cambiarEstado }: Props) {
               <span className="delivery-pay-badge">+{bs(p.pago_delivery)}</span>
             </div>
             <Ruta p={p} />
-            <div className="order-actions">
-              <a className="btn-secondary btn-sm" href={enlaceMapa(p.direccion_entrega)} target="_blank" rel="noreferrer">🗺️ Ver mapa</a>
-              <a className="btn-ghost btn-sm" href={`tel:${p.cliente_telefono}`}>📞 Llamar</a>
-              <button className="btn-primary btn-sm" onClick={() => void entregar(p.id)}>✅ Entregado</button>
+            <Mapa direccion={p.direccion_entrega} />
+            <div className="order-actions" style={{ flexWrap: 'wrap' }}>
+              <a className="btn-secondary btn-sm" href={enlaceMapa(p.direccion_entrega)} target="_blank" rel="noreferrer">Abrir en Google Maps</a>
+              <Contacto nombre="Cliente" telefono={p.cliente_telefono} />
+              <Contacto nombre="Lavandería" telefono={p.telefono_negocio} />
             </div>
+            <button className="btn-primary btn-sm" onClick={() => void completar(p)}>
+              {esRecojo(p) ? '✅ Dejé la ropa en la lavandería' : p.metodo_pago === 'efectivo' && p.saldo > 0 ? '✅ Entregado y cobrado' : '✅ Entregado'}
+            </button>
           </div>
         ))}
       </div>
 
-      <Titulo icono="📦" texto="Carreras disponibles" nota="Pedidos que la lavandería marcó como listos" />
-      {datos.disponibles.length === 0 && <Vacio>No hay pedidos listos por ahora.</Vacio>}
+      <Titulo icono="📦" texto="Carreras disponibles" nota="Recojos aceptados y entregas listas" />
+      {datos.disponibles.length === 0 && <Vacio>No hay carreras por ahora.</Vacio>}
       <div className="cards-grid">
         {datos.disponibles.map((p) => (
           <div key={p.id} className="order-card card-blue-border">
